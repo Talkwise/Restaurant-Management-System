@@ -1,0 +1,40 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{{restaurant.title}}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'restaurant/styles.css' %}">
+</head>
+<body>
+    <div id="header">
+        <img src = "{{restaurant.logo.url}}" id = "main-logo">
+        {%if restaurant.title %}
+            <h1>{{restaurant.title}} e-Restaurant</h1>
+        {%else%}
+            <h1>Restaurant Ordering System</h1>
+            {{restaurant.title}}
+        {%endif%}
+        <a href="{% url 'index' %}">Home</a> |
+        {% if user.is_authenticated %}
+        Signed in as {{ user.username }} | <a href="{% url 'logout' %}">Logout</a>
+
+            {% if user.is_admin %} 
+                <button class="panel-button"  onclick="window.location.href='{% url 'admin_home' %}'">Admin Panel</button>
+            {%else%}
+                 <button class="panel-button"  onclick="window.location.href='{% url 'user_orders' %}'">My Orders</button>
+            {% endif %}
+
+        {% else %}
+            <a href="{% url 'login' %}">Login</a> |
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        
+ 
+    </div>
+
+    <div id="main-content">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

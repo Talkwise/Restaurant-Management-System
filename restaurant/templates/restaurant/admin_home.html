@@ -1,0 +1,89 @@
+{% extends 'restaurant/admin_layout.html' %}
+
+{% block title %}Admin Home{% endblock %}
+
+{% block content %}
+<div class="order-container">
+    <h2>Active Orders</h2>
+    {% for order in orders %}
+    
+        <div class="order-card">
+            <div class = 'order-section'>
+                <b>Order # {{order.id}}</b>
+                <br style = "margin: 10px;">
+                {{order.created_at}}
+                <br style = "margin: 10px;">
+
+                <b>Payment Method: {{order.payment_method.capitalize}}</b> 
+                <br style = "margin: 20px;">
+                
+                <br style = "margin: 10px;">
+            <form method = "post" action ="{%url 'change_status'%}">
+                {% csrf_token %}
+
+                <input type = "hidden" name = "order_id" value = {{order.id}}>
+                <select id="change_status" name="change_status">
+                    <option value="Preparing">Preparing</option>
+                    <option value="Dispatched">Dispatched</option>
+                    <option value="Delivered">Delivered</option>
+                
+            
+                </select>
+
+                <div class="button-container">
+                    <input type="submit" class="change-status-btn" value="Change Status">
+                </div>
+                
+          </form>
+
+            </div>
+
+            <div class = 'order-section'>
+            <b>{{order.made_by}}</b>
+                <br style = "margin: 10px;">
+                
+                <b>House # {{order.shipping_address.all.0.houseNo}} Flat# {{order.shipping_address.all.0.flatNo}} </b>
+                <br style = "margin: 10px;">
+                <b>Street Address: {{order.shipping_address.all.0.street}} </b> 
+                <br style = "margin: 10px;">
+
+                {% if order.shipping_address.all.0.additional  %}
+                    <br style = "margin: 10px;">
+                    <b>Additional Instructions:  {{order.shipping_address.all.0.additional}}</b>
+                {%endif%}
+            </div>
+
+            <div class = 'order-section'>
+                <b>Items</b>
+                <br style = "margin: 10px;">
+                {% for each in order.order_items.all %}
+                    {{each}}
+                <br>
+                
+                {%endfor%}
+                <br>
+                <b>Grand Total:</b>
+            </div>
+
+            <div class = 'order-section'>
+                <b>Price</b>
+                <br style = "margin: 10px;">
+                {% for each in order.order_items.all %}
+                    {{each.subtotal}}
+                <br>
+                {%endfor%}
+
+                <br>
+
+                <b>{{order.grand_total}}</b>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+   
+    
+
+   
+    
+    
+{% endblock %}

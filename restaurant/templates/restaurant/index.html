@@ -1,0 +1,121 @@
+{% extends 'restaurant/layout.html' %}
+
+{% block content %}
+    <div id="menu">
+        <h1>MENU</h1>
+        {%for item in menu_items %}
+            <div class="item">
+                <h2 id="food">{{item.item_name}}</h2>
+                <p>
+                    <h4>Description </h4>
+                    <h5 style="text-wrap: wrap; width:80%;"> {{item.description}}</h5>
+                </p>
+                <img align='right' src="{{item.image.url}}" class = "menu_image">
+                <br>
+                <h2 id="food">{{item.price}} GHC</h2>
+                <br>
+            {%if user.is_authenticated %}
+                <form action = "{% url 'add_to_cart' item_id=item.id %}" method = "post">
+                    {% csrf_token %}
+                    <button type = 'submit' class="button add-to-cart-btn">ADD TO CART</button>
+                </form>
+            {% else %}
+              <form action = "{% url 'login' %}" method ="get">
+                {% csrf_token %}
+                <button type = 'submit' class="button add-to-cart-btn">LOGIN TO ADD TO CART</button>
+              </form>
+            {%endif%}
+                
+            </div>
+        {%endfor%}
+    </div>
+
+    <div id="cart">
+        {%if not placed %}
+        <h2>CART</h2>
+
+  
+    <form action = "{% url 'confirm_order' %}" method = "post">
+
+        {%for item in order_items%}
+        
+            <div class="cart-item">
+                <div class="item-details">
+                    <h3>{{item.menu_item.item_name}}</h3>
+                    <p>Price: GHC {{item.menu_item.price}}</p>
+                </div>
+                <div class="item-actions">
+                    <div class="quantity">
+                        <label for="quantity">Quantity:</label>
+                        <input type="number" id="quantity" name="quantity" min="1" class = "quantity-box" value="{{item.quantity}}" readonly>
+                    </div>
+                    
+                </div>
+                <a href="{%url 'remove_item' item.id%}">X</a>
+
+                
+            </div>
+
+        {%endfor%}
+            <br>
+      
+        
+        
+            {% csrf_token %}
+            <input type = "hidden" name = "order_id" value = {{order.id}}>
+            <button type = 'submit' class="button add-to-cart-btn">Confirm Order</button>
+        </form>    
+
+        <br>
+    {%if confirm%}
+        <h2>SUBTOTAL: {{order.grand_total}}</h2>
+<br>
+<div class="shipping-details">
+    <h3 id="shipping-details-title">Shipping Details</h3>
+    
+    <form method = "post" id="shippingForm" style="max-width: 400px; margin: 0 auto; padding: 20px; background-color: #f2f2f2;; border-radius: 8px; " action= "{%url 'place_order'%}">
+    {% csrf_token %}
+        <input type = "hidden" name = "order_id" value = {{order.id}}>
+    
+        <label for="houseNo">House No:</label>
+        <input class = 'address-info' type="text" id="houseNo" name="houseNo"  required>
+    
+        <label for="flatNo" style="display: block; margin-bottom: 5px; color: #333;">Flat No:</label>
+        <input class = 'address-info' type ="text" id="flatNo" name="flatNo"  required>
+    
+        <label for="streetAddress" style="display: block; margin-bottom: 5px; color: #333;">Street Address:</label>
+        <input class = 'address-info' type="text" id="streetAddress" name="streetAddress"  required>
+
+        <label for="additional" style="display: block; margin-bottom: 5px; color: #333;">Additional Instructions :</label>
+        <input class = 'address-info' type="text" id="additional" name="additional">
+        
+    
+        <label for="paymentMethod" id = "payment-label"><b>Payment method:</b></label>
+        <select id="paymentMethod" name="paymentMethod">
+            <option value="cash">Cash</option>
+            <option value="card">Card</option>
+            <option value="bkash">bKash</option>
+            <option value="nagad">Nagad</option>
+    
+        </select>
+<br><br>
+
+        <input type="submit" value="PLACE ORDER" style="background-color: #4caf50; color: #fff; padding: 10px; cursor: pointer; border: none; border-radius: 5px;">
+    </form>
+    
+</div>
+             
+
+
+
+
+   
+    {%endif%}
+
+{%else%}
+        <h3>Your order is being processed. </h3>
+{% endif %}
+</div>
+
+{% endblock %}
+

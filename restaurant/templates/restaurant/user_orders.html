@@ -1,0 +1,92 @@
+{% extends 'restaurant/layout.html' %}
+
+{% block title %} My Orders{% endblock %}
+
+{% block content %}
+<div class="order-container">
+    <h2>My Orders</h2>
+    {% for order in orders %}
+    
+        <div class="order-card">
+            <div class = 'order-section'>
+                <b>Order # {{order.id}}</b>
+                <br style = "margin: 10px;">
+                {{order.created_at}}
+                <br style = "margin: 10px;">
+
+                <b>Payment Method: {{order.payment_method.capitalize}}</b> 
+                <br style = "margin: 20px;">
+                
+                <br style = "margin: 10px;">
+            
+                <h3>Order Status: </h3>
+                {% if order.status == 'placed' %}
+                <div class="order-status" style="background-color: cyan;"> 
+                     Placed
+                </div>
+
+                {% elif order.status == 'Preparing' %}
+                <div class="order-status" style="background-color: burlywood;"> 
+                    Preparing
+                </div>
+
+                {% elif order.status == 'Dispatched' %}
+                <div class="order-status" style="background-color: lightcoral;"> 
+                   Dispatched
+                </div>
+            {% else %}
+            <div class="order-status" style="background-color: lightgreen;">
+                Delivered
+            </div>
+            {% endif %}
+
+              
+                
+        
+            </div>
+
+            <div class = 'order-section'>
+            <b>{{order.made_by}}</b>
+                <br style = "margin: 10px;">
+                
+                <b>House # {{order.shipping_address.all.0.houseNo}} Flat# {{order.shipping_address.all.0.flatNo}} </b>
+                <br style = "margin: 10px;">
+                <b>Street Address: {{order.shipping_address.all.0.street}} </b> 
+                <br style = "margin: 10px;">
+
+                {% if order.shipping_address.all.0.additional  %}
+                    <br style = "margin: 10px;">
+                    <b>Additional Instructions:  {{order.shipping_address.all.0.additional}}</b>
+                {%endif%}
+            </div>
+
+            <div class = 'order-section'>
+                <b>Items</b>
+                <br style = "margin: 10px;">
+                {% for each in order.order_items.all %}
+                    {{each}}
+                <br>
+                
+                {%endfor%}
+                <br>
+                <b>Grand Total:</b>
+            </div>
+
+            <div class = 'order-section'>
+                <b>Price</b>
+                <br style = "margin: 10px;">
+                {% for each in order.order_items.all %}
+                    {{each.subtotal}}
+                <br>
+                {%endfor%}
+
+                <br>
+
+                <b>{{order.grand_total}}</b>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+   
+     
+{% endblock %}

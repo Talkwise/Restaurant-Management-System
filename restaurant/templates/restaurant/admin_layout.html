@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{{restaurant.title}} Admin{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'restaurant/admin_styles.css' %}">
+</head>
+<body>
+    <div id="header">
+        <img src = "{{restaurant.logo.url}}" id = "main-logo">
+        {%if restaurant.title %}
+            <h1>{{restaurant.title}} Dashboard</h1>
+        {%else%}
+            <h1>Admin Dashboard</h1>
+        {%endif%}
+    <div id = "header-links">
+        <a href="{% url 'admin_home' %}">Dashboard</a> 
+        {% if user.is_authenticated %}
+         |  Signed in as {{ user.username }} | <a href="{% url 'logout' %}">Logout</a>
+
+        {% else %}
+            <a href="{% url 'login' %}">Login as admin</a> 
+        {% endif %}   
+    </div>  
+    </div>
+
+    <div id="main-content">
+        {% block content %}
+        {% endblock %}   
+        <div class="settings">
+            <h1>Settings</h1>
+            <a href="{% url 'configure' %}" class="big-card">Configure Restaurant</a>
+            <br>
+            <a href="{% url 'index' %}" class="big-card">FrontPage</a>
+            <br>
+            <a href="{% url 'admin_home' %}" class="big-card">Admin Dashboard</a>
+            <br>
+            <a href="{% url 'manage_menu' %}" class="big-card">Manage Menu</a>
+            <br>
+            <a href="{% url 'add_item' %}" class="big-card">Add Menu Item</a>
+            <br>
+            <a href="{% url 'sales_history' %}" class="big-card">Sales History</a>
+            <br>
+            
+            
+        </div>
+        
+    </div>
+</body>
+</html>

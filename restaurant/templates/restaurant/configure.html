@@ -1,0 +1,33 @@
+{% extends 'restaurant/admin_layout.html' %}
+
+{% block title %} Admin Home {% endblock %}
+
+{% block content %}
+
+    <div id="main-content">
+        <div id="configure-form">
+            <h2>Configuration</h2>
+
+            <form method="post" action="{% url 'configure' %}" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                
+                <label for="restaurant_name"><b>Restaurant Name:</b></label>
+                <input type="text" name="restaurant_name" id="restaurant_name" required>
+
+                <br>
+                
+                <label for="logo"><b>Restaurant Logo:</b></label>
+                <input type="file" name="logo" id="logo" required>
+                <br>
+                
+                <button type="submit"><b>Change Configuration</b></button>
+            
+            </form>
+
+        
+        
+        </div>
+    </div>
+
+{% endblock %}
